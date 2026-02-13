@@ -1,7 +1,8 @@
 import express from "express";
 import {
   getAllContents,
-  getContentById
+  getContentById,
+  createContent
 } from "../controllers/externalController.js";
 
 import { verifyBearerToken } from "../middleware/authMiddleware.js";
@@ -15,5 +16,7 @@ router.use(verifyBearerToken);
 
 router.get("/contents", getAllContents);
 router.get("/contents/:id", getContentById);
+router.post("/contents", createContent);
+
 
 export default router;

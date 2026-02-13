@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import externalRoutes from "./routes/externalRoutes.js";
+import dotenv from "dotenv";
+dotenv.config();
+import config from "./config.js";
 
 const app = express();
 
@@ -9,8 +12,15 @@ app.use(express.json());
 
 app.use("/api/external", externalRoutes);
 
+
+console.log(process.env.APP_ENV);
+console.log(process.env.DATABASE_URL);
+
+
 app.get("/", (req, res) => {
   res.json({
+    app: config.appName,
+    environment: process.env.APP_ENV || "local",
     message: "External Content API running 🚀",
     nodeVersion: process.version
   });
@@ -19,5 +29,5 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running  ${config.appName} on port ${PORT}`);
 });
