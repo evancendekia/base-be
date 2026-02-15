@@ -21,16 +21,18 @@ export const getArticlesGrouped = async (req, res, next) => {
   try {
     const { page = 1, pageSize = 50 } = req.query;
 
-    const result = await articleService.getArticles({
+    const result = await articleService.getCategories({
       page,
       pageSize,
     });
 
-    const grouped = groupByCategory(result.data);
+    // console.log("Articles Result for Grouping:", result);
+    // const grouped = groupByCategory(result.data);
 
-    return res.json({
-      data: grouped,
-    });
+    return res.json(transformListCategory(result));
+    // return res.json({
+    //   data: result.data,
+    // });
   } catch (error) {
     next(error);
   }
@@ -67,6 +69,22 @@ const transformList = (data) => ({
   })),
   meta: data.meta || null,
 });
+
+
+const transformListCategory = (data) => ({
+  data: data.data.map((category) => ({
+    id: category.id,
+    name: category.name,
+    banner:
+      category.banner?.formats?.large?.url ||
+      category.banner?.url ||
+      null,
+    publishedAt: category.publishedAt,
+    articles: category.articles
+  })),
+  meta: data.meta || null,
+});
+
 
 const transformDetail = (article) => ({
   id: article.id,
@@ -117,6 +135,10 @@ const groupByCategory = (articles) => {
         map[category.name] = {
           id: category.id,
           name: category.name,
+          banner:
+            category.banner?.formats?.medium?.url ||
+            category.banner?.url ||
+            null,
           articles: [],
         };
       }
