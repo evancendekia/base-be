@@ -13,14 +13,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Content {
-  id          Int      @id @default(autoincrement())
-  title       String
-  subtitle    String
-  description String
-  imageName   String
-  category    String
-  status      String
-  author      String
-  createdAt   DateTime @default(now())
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String
+  name          String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subscription  Subscription?
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  planType   PlanType
+  status     Status
+  startDate  DateTime
+  endDate    DateTime
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+enum PlanType {
+  PREMIUM
+}
+
+enum Status {
+  ACTIVE
+  EXPIRED
+  CANCELLED
 }
