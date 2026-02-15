@@ -1,4 +1,4 @@
-import { sendTestEmail } from "../services/notificationService.js";
+import { sendTestEmail } from "../../shared/services/notificationService.js";
 
 export const triggerTestEmail = async (req, res) => {
   const { to } = req.body;

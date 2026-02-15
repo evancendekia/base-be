@@ -1,5 +1,5 @@
 // import { contents } from "../data/dummyContent.js";
-import prisma from "../config/prisma.js";
+import prisma from "../../config/prisma.js";
 
 
 export const getAllContents = async(req, res) => {

@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
-import externalRoutes from "./routes/externalRoutes.js";
-import testRoutes from "./routes/test.js";
+import externalRoutes from "./modules/external/external.routes.js";
+import testRoutes from "./modules/test/test.routes.js";
+import articleRoutes from "./modules/article/article.routes.js";
 import dotenv from "dotenv";
 dotenv.config();
 import config from "./config.js";
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/external", externalRoutes);
 app.use('/api/test', testRoutes);
+app.use("/api/articles", articleRoutes);
 
 
 console.log(process.env.APP_ENV);
