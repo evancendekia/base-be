@@ -3,9 +3,9 @@ import {
   getAllContents,
   getContentById,
   createContent
-} from "../controllers/externalController.js";
+} from "./external.controller.js";
 
-import { verifyBearerToken } from "../middleware/authMiddleware.js";
+import { verifyBearerToken } from "../../middleware/authMiddleware.js";
 
 const router = express.Router();
 
