@@ -30,16 +30,20 @@ export const loginUser = async ({ email, password }) => {
     where: { email },
   });
 
+  console.log("Login attempt for email:", email);
   if (!user) {
     throw new Error("Invalid credentials");
   }
 
+  console.log("User found:", user.email);
+  console.log("passwordHash:", user.passwordHash);
+  console.log("Provided password:", password);
   const isValid = await bcrypt.compare(password, user.passwordHash);
 
   if (!isValid) {
     throw new Error("Invalid credentials");
   }
-
+  console.log("User authenticated:", user.email);
   const token = jwt.sign(
     { userId: user.id },
     config.JWT_SECRET,

@@ -21,7 +21,7 @@ export const getArticlesGrouped = async (req, res, next) => {
   try {
     const { page = 1, pageSize = 50 } = req.query;
 
-    const result = await articleService.getCategories({
+    const result = await articleService.getArticlesByCategories({
       page,
       pageSize,
     });
@@ -50,6 +50,23 @@ export const getBySlug = async (req, res, next) => {
     }
 
     return res.json(transformDetail(result.data[0]));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTopics= async (req, res, next) => {
+  try {
+    const { page = 1, pageSize = 10 } = req.query;
+
+    const result = await articleService.getArticles({
+      page,
+      pageSize,
+    });
+
+    console.log("Articles Result:", result);
+
+    return res.json(transformList(result));
   } catch (error) {
     next(error);
   }

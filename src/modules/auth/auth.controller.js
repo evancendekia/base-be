@@ -1,5 +1,8 @@
 import { registerUser, loginUser } from "./auth.service.js";
 import prisma from "../../config/prisma.js";
+import jwt from "jsonwebtoken";
+import { buildUserResponse } from "../user/user.service.js";
+
 
 export const register = async (req, res) => {
   try {
@@ -11,11 +14,24 @@ export const register = async (req, res) => {
 
     const user = await registerUser({ email, password, name });
 
+    // Generate JWT immediately (AUTO LOGIN)
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    // Get full profile
+    const userProfile = await buildUserResponse(user.id);
+
     res.status(201).json({
       message: "User registered successfully",
-      userId: user.id,
+      token,
+      user: userProfile,
     });
+
   } catch (error) {
+    console.log("Registration Error:", error.message);
     res.status(400).json({ message: error.message });
   }
 };
@@ -25,56 +41,21 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const token = await loginUser({ email, password });
+    console.log("Generated Token:", token);
 
-    res.json({
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const userProfile = await buildUserResponse(decoded.userId);
+
+     res.json({
       message: "Login successful",
       token,
+      user: userProfile,
     });
   } catch (error) {
+    console.log("Login Error:", error.message);
     res.status(401).json({ message: error.message });
   }
 };
 
 
-export const getMe = async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.userId },
-      include: {
-        subscription: true,
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const isPremiumActive =
-        user.subscription &&
-        user.subscription.status === "ACTIVE" &&
-        new Date(user.subscription.endDate) > new Date();
-
-    const response = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      createdAt: user.createdAt,
-      subscription: null,
-      isPremiumActive: isPremiumActive
-    };
-
-    if (user.subscription) {
-        response.subscription = {
-            planType: user.subscription.planType,
-            status: user.subscription.status,
-            startDate: user.subscription.startDate,
-            endDate: user.subscription.endDate,
-
-        };
-    }
-
-    res.json(response);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch user profile" });
-  }
-};
