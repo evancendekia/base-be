@@ -14,13 +14,15 @@ datasource db {
 }
 
 model User {
-  id            String        @id @default(uuid())
-  email         String        @unique
-  passwordHash  String
-  name          String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  subscription  Subscription?
+  id                    String            @id @default(uuid())
+  email                 String            @unique
+  passwordHash          String
+  name                  String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  subscription          Subscription?
+  preferences           UserPreference[]
+  preferenceCompleted   Boolean           @default(false)
 }
 
 model Subscription {
@@ -33,6 +35,17 @@ model Subscription {
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+}
+
+model UserPreference {
+  id          String   @id @default(uuid())
+  userId      String
+  cmsTopicId  String   // ID from CMS
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cmsTopicId])
 }
 
 enum PlanType {
