@@ -9,7 +9,6 @@ export const getArticles = async (req, res, next) => {
       pageSize,
     });
 
-    console.log("Articles Result:", result);
 
     return res.json(transformList(result));
   } catch (error) {
@@ -19,20 +18,17 @@ export const getArticles = async (req, res, next) => {
 
 export const getArticlesGrouped = async (req, res, next) => {
   try {
-    const { page = 1, pageSize = 50 } = req.query;
 
+    const page = req.body.page || 1;
+    const pageSize = req.body.pageSize || 50;
+    const preferences = req.body.preferences || [];
     const result = await articleService.getArticlesByCategories({
       page,
       pageSize,
+      preferences: preferences   ,
     });
 
-    // console.log("Articles Result for Grouping:", result);
-    // const grouped = groupByCategory(result.data);
-
     return res.json(transformListCategory(result));
-    // return res.json({
-    //   data: result.data,
-    // });
   } catch (error) {
     next(error);
   }
@@ -48,25 +44,10 @@ export const getBySlug = async (req, res, next) => {
     if (!result.data?.length) {
       return res.status(404).json({ message: "Article not found" });
     }
-
-    return res.json(transformDetail(result.data[0]));
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const getTopics= async (req, res, next) => {
-  try {
-    const { page = 1, pageSize = 10 } = req.query;
-
-    const result = await articleService.getArticles({
-      page,
-      pageSize,
+    return res.json({
+        status: "success",
+        data: transformDetail(result.data[0]),
     });
-
-    console.log("Articles Result:", result);
-
-    return res.json(transformList(result));
   } catch (error) {
     next(error);
   }
@@ -105,6 +86,8 @@ const transformListCategory = (data) => ({
         slug: art.slug,
         content: art.content,
         image: art.featuredImage.formats?.small?.url || art.featuredImage.url || null,  
+        is_premium: art.is_premium,
+        publishedAt: art.publishedAt,
         })) || [],
   })),
   meta: data.meta || null,
@@ -118,8 +101,10 @@ const transformDetail = (article) => ({
   slug: article.slug,
   description: article.description,
   content: article.content,
+  is_premium: article.is_premium,
   createdAt: article.createdAt,
   publishedAt: article.publishedAt,
+  video: article.video || null,
 
   featuredImage: article.featuredImage
     ? {

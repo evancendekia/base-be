@@ -20,8 +20,6 @@ app.use("/api/articles", articleRoutes);
 app.use("/api/topics", topicRoutes);
 
 
-console.log(process.env);
-
 
 app.get("/", (req, res) => {
   res.json({

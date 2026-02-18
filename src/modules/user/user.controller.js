@@ -7,7 +7,6 @@ import {
 
 
 
-
 export const getMe = async (req, res) => {
   try {
 
@@ -32,31 +31,28 @@ export const getMe = async (req, res) => {
 
 export const updatePreferences = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const cmsTopicIds = req.body;
+    const userId = req.user.userId;
+    const selectedTopics = req.body.topics;
 
     // validate input
-    if (!Array.isArray(cmsTopicIds)) {
+    if (!Array.isArray(selectedTopics)) {
       return res.status(400).json({
         message: "Body must be an array of topic slugs",
       });
     }
 
-    if (cmsTopicIds.length === 0) {
+    if (selectedTopics.length === 0) {
       return res.status(400).json({
         message: "At least one topic must be selected",
       });
     }
 
-    const updatedUser =
-      await userService.updatePreferencesUser(
-        userId,
-        cmsTopicIds
-      );
+    const updatedUser = await updatePreferencesUser(userId, selectedTopics);
 
     return res.json({
-      message: "Preferences updated successfully",
-      user: updatedUser,
+        status: "success",
+        message: "Preferences updated successfully",
+        user: updatedUser,
     });
 
   } catch (err) {

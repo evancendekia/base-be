@@ -16,6 +16,14 @@ class TopicService {
       throw error;
     }
   }
+  async getTopicsByIds (topicIds) {
+    if (!topicIds.length) return [];
+
+    const query = topicIds.map(id => `filters[slug][$in][]=${id}`).join("&");
+    const res = await strapiClient.get(`/categories?${query}&sort=name:asc`);
+
+    return res.data.data;
+  };
 
   async getTopicDetails(slug) {
     try {

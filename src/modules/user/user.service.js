@@ -1,5 +1,6 @@
 // services/user.service.js
 import prisma from "../../config/prisma.js";
+import topicService from "../topics/topic.service.js";
 
 
 export const updatePreferencesUser = async (
@@ -47,6 +48,9 @@ export const buildUserResponse = async (userId) => {
 
   if (!user) return null;
 
+  const topicIds = user.preferences.map(p => p.cmsTopicId);
+  const topics = await topicService.getTopicsByIds(topicIds);
+
   const isPremiumActive =
     user.subscription &&
     user.subscription.status === "ACTIVE" &&
@@ -60,7 +64,11 @@ export const buildUserResponse = async (userId) => {
 
     preferenceCompleted: user.preferenceCompleted,
 
-    preferences: user.preferences.map(p => p.cmsTopicId),
+    // preferences: user.preferences.map(p => p.cmsTopicId),
+    preferences: topics.map(topic => ({
+      slug: topic.slug,
+      name: topic.name,
+    })),
 
     isPremiumActive,
 

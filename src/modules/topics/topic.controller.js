@@ -3,7 +3,12 @@ import topicService from "./topic.service.js";
 export const getTopics= async (req, res, next) => {
   try {
     const result = await topicService.getTopicList();
-    return res.json(result);
+
+    return res.json({
+        status: "success",
+        data: result.data,
+    });
+    // return res.json(result);
   } catch (error) {
     next(error);
   }
@@ -11,9 +16,8 @@ export const getTopics= async (req, res, next) => {
 export const getTopicsDetails = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    console.log("Slug for Topic Details:", slug);
     const result = await topicService.getTopicDetails(slug);
-    console.log("Topic Details Result:", result);
+
     return res.json(transformListCategory(result));
     // return res.json(result);
   } catch (error) {
@@ -41,13 +45,6 @@ const transformListCategory = (data) => ({
         slug: art.slug,
         content: art.content,
         image: art.featuredImage.formats?.small?.url || art.featuredImage.url || null,
-        // featuredImage: art.featuredImage ? {
-        //   url: art.featuredImage.url,
-        //   thumbnail: art.featuredImage.formats?.thumbnail?.url || null,
-        //   small: art.featuredImage.formats?.small?.url || null,
-        //   medium: art.featuredImage.formats?.medium?.url || null,
-        //   large: art.featuredImage.formats?.large?.url || null,
-        // } : null,
         })) || [],
     
   })),

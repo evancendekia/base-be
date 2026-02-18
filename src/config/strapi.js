@@ -14,16 +14,6 @@ strapiClient.interceptors.request.use((config) => {
   const path = config.url?.replace(/^\//, "") || "";
   const finalUrl = `${base}/${path}`;
 
-  console.log("=== STRAPI REQUEST ===");
-console.log("config:", config);
-
-  console.log("process.env.STRAPI_URL:", process.env.STRAPI_URL);
-  console.log("STRAPI_TOKEN:", process.env.STRAPI_TOKEN);
-  console.log("Method:", config.method?.toUpperCase());
-  console.log("Full URL:", finalUrl);
-  console.log("Params:", config.params);
-  console.log("======================");
-
   return config;
 });
 
