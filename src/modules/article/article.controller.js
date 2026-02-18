@@ -96,8 +96,16 @@ const transformListCategory = (data) => ({
       category.banner?.formats?.large?.url ||
       category.banner?.url ||
       null,
+    slug: category.slug,
     publishedAt: category.publishedAt,
-    articles: category.articles
+    articles:
+        category.articles?.map((art) => ({
+        id: art.id,
+        title: art.title,
+        slug: art.slug,
+        content: art.content,
+        image: art.featuredImage.formats?.small?.url || art.featuredImage.url || null,  
+        })) || [],
   })),
   meta: data.meta || null,
 });

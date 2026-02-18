@@ -5,6 +5,7 @@ import articleRoutes from "./modules/article/article.routes.js";
 import topicRoutes from "./modules/topics/topic.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import testRoutes from "./modules/test/test.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
 
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use('/api/test', testRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/topics", topicRoutes);

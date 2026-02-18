@@ -1,9 +1,8 @@
 
-// controllers/user.controller.js
-import prisma from "../prisma.js";
+import prisma from "../../config/prisma.js";
 import { 
     buildUserResponse, 
-    updatePreferences 
+    updatePreferencesUser 
 } from "../user/user.service.js";
 
 
@@ -50,7 +49,7 @@ export const updatePreferences = async (req, res) => {
     }
 
     const updatedUser =
-      await userService.updatePreferences(
+      await userService.updatePreferencesUser(
         userId,
         cmsTopicIds
       );
