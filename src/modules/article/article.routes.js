@@ -8,7 +8,8 @@ import {
 const router = express.Router();
 
 router.get("/", getArticles);
-router.get("/grouped", getArticlesGrouped);
+router.post("/grouped", getArticlesGrouped);
 router.get("/:slug", getBySlug);
+
 
 export default router;

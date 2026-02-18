@@ -2,6 +2,7 @@ import { registerUser, loginUser } from "./auth.service.js";
 import prisma from "../../config/prisma.js";
 import jwt from "jsonwebtoken";
 import { buildUserResponse } from "../user/user.service.js";
+import { sendWelcomeEmail } from "../../shared/services/notificationService.js";
 
 
 export const register = async (req, res) => {
@@ -23,6 +24,7 @@ export const register = async (req, res) => {
 
     // Get full profile
     const userProfile = await buildUserResponse(user.id);
+    sendWelcomeEmail(email, name);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -41,7 +43,6 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const token = await loginUser({ email, password });
-    console.log("Generated Token:", token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

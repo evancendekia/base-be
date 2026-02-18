@@ -20,10 +20,15 @@ class ArticleService {
       throw error;
     }
   }
-  async getArticlesByCategories({ page = 1, pageSize = 10 }) {
+  async getArticlesByCategories({ page = 1, pageSize = 10, preferences = [] }) {
     try {
+        const topicFilter = preferences.reduce((acc, pref, index) => {
+            acc[`filters[slug][$in][${index}]`] = pref.slug;
+            return acc;
+        }, {});
       const response = await strapiClient.get("/categories", {
         params: {
+            ...topicFilter,
           "pagination[page]": page,
           "pagination[pageSize]": pageSize,
           // populate: ["featuredImage", "categories"],
