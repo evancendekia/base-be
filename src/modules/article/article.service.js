@@ -27,8 +27,11 @@ class ArticleService {
           "pagination[page]": page,
           "pagination[pageSize]": pageSize,
           // populate: ["featuredImage", "categories"],
+          
           "populate[banner]": true,
-          "populate[articles]": true,
+          "populate": "articles",
+          "populate[articles]": "*",
+          "populate[articles][populate]":"featuredImage",
           sort: "name:asc",
         },
       });

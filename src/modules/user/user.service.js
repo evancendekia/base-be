@@ -2,7 +2,7 @@
 import prisma from "../../config/prisma.js";
 
 
-export const updatePreferences = async (
+export const updatePreferencesUser = async (
   userId,
   cmsTopicIds
 ) => {
